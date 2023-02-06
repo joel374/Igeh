@@ -1,0 +1,52 @@
+props untuk passing data dari parent ke child
+
+
+componentDidMount
+useEffect(()=>{
+    //...
+},[])
+
+componentDidUpdate
+useEffect(()=>{
+    //...
+},[counter])
+
+useEffect(()=>{
+    return ()=>{
+        //componentWillUnmount
+        //...
+    }
+},[])
+
+siklus kehidupan komponen 
+1. componentWillMount (x)
+2. component render
+3. comonentDidMount
+4. componentWillUpdate (x)
+-. perubahan terjadi
+5. comonentDidUpdate
+6. componentWillUnmount
+
+
+routes
+path adalah atribut yang bersifat custom
+
+
+navigate untuk redirect
+link untuk yang di klik 
+
+useNavigate mereturn sebuah function
+useState mereturn sebuah array
+useDisclousure mereturn sebuah objek
+
+
+route params dari useParams di import dari react router dom
+
+"/user?"
+key value pair karena ada key(username) dan value nya(seto)
+
+redux
+
+middleware
+
+component -> action -> middleware -> reducer -> store -> component

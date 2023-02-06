@@ -1,0 +1,21 @@
+.heroColor{
+    background-color: #C37B89;
+}
+
+@media screen and  (max-width:480px){
+    .mobilePost{
+        height: 70%;
+        width: auto;
+        
+    }
+    .mobileNavbar{
+        font-size: 1px;
+    }
+    #font{
+        font-size: 1px
+    }
+    .background{
+        background-color: aqua;
+    }
+}
+

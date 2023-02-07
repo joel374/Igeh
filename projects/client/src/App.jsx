@@ -1,51 +1,50 @@
-import { Box, Spinner } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { Routes, Route } from "react-router-dom"
-import { axiosInstance } from "./api"
-import GuestRoute from "./component/GuesRoute"
-import ProtectedRoute from "./component/ProtectedRoute"
-import Dashboard1 from "./pages/admin/Dashboard1"
-import Dashboard2 from "./pages/admin/Dashboard2"
-import HomePage from "./pages/Home"
-import LoginPage from "./pages/Login"
-import ProfilePage from "./pages/Profile"
-import RegisterPage from "./pages/Register"
-import NotFoundPage from "./pages/404"
-import Loading from "./component/Loading"
-import { login } from "./redux/features/authSlice"
-import MyPorfile from "./pages/MyPorfile"
-import "./App.css"
-import Navbar from "./component/Navbar"
+import { Box, Spinner } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route } from "react-router-dom";
+import { axiosInstance } from "./api";
+import GuestRoute from "./components/GuesRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Dashboard1 from "./pages/admin/Dashboard1";
+import Dashboard2 from "./pages/admin/Dashboard2";
+import HomePage from "./pages/Home";
+import LoginPage from "./pages/Login";
+import ProfilePage from "./pages/Profile";
+import RegisterPage from "./pages/Register";
+import NotFoundPage from "./pages/404";
+import Loading from "./components/Loading";
+import { login } from "./redux/features/authSlice";
+import MyPorfile from "./pages/MyPorfile";
+import Navbar from "./components/Navbar";
 
 const App = () => {
-  const [authCheck, setAuthCheck] = useState(false)
-  const authSelector = useSelector((state) => state.auth)
-  const dispatch = useDispatch()
+  const [authCheck, setAuthCheck] = useState(false);
+  const authSelector = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const keepUserLogin = async () => {
     try {
-      const auth_token = localStorage.getItem("auth_token")
+      const auth_token = localStorage.getItem("auth_token");
 
       if (!auth_token) {
-        setAuthCheck(true)
-        return
+        setAuthCheck(true);
+        return;
       }
 
       const response = await axiosInstance.get(`/auth/refresh-token`, {
         headers: {
           authorization: `Bearer ${auth_token}`,
         },
-      })
+      });
 
-      dispatch(login(response.data.data))
-      localStorage.setItem("auth_token", response.data.token)
-      setAuthCheck(true)
+      dispatch(login(response.data.data));
+      localStorage.setItem("auth_token", response.data.token);
+      setAuthCheck(true);
     } catch (error) {
-      console.log(error)
-      setAuthCheck(true)
+      console.log(error);
+      setAuthCheck(true);
     }
-  }
+  };
 
   const renderAdminRoutes = () => {
     if (authSelector.role === "admin") {
@@ -54,13 +53,13 @@ const App = () => {
           <Route path="/admin/dashboard1" element={<Dashboard1 />} />
           <Route path="/admin/dashboard2" element={<Dashboard2 />} />
         </>
-      )
+      );
     }
-  }
+  };
 
   useEffect(() => {
-    keepUserLogin()
-  }, [])
+    keepUserLogin();
+  }, []);
 
   if (!authCheck) {
     return (
@@ -73,7 +72,7 @@ const App = () => {
           size="xl"
         />
       </Box>
-    )
+    );
   }
 
   return (
@@ -112,6 +111,6 @@ const App = () => {
         <Route path="/testPage" element={<Loading />} />
       </Routes>
     </Box>
-  )
-}
-export default App
+  );
+};
+export default App;

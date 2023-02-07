@@ -11,19 +11,19 @@ import {
   Stack,
   Text,
   useToast,
-} from "@chakra-ui/react"
-import { useFormik } from "formik"
-import { useState } from "react"
-import * as Yup from "yup"
-import { axiosInstance } from "../api"
+} from "@chakra-ui/react";
+import { useFormik } from "formik";
+import { useState } from "react";
+import * as Yup from "yup";
+import { axiosInstance } from "../api";
 
 const RegisterPage = () => {
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
-  const toast = useToast()
+  const toast = useToast();
 
   const formik = useFormik({
     initialValues: {
@@ -37,21 +37,21 @@ const RegisterPage = () => {
           username,
           email,
           password,
-        })
+        });
         toast({
           title: "Registration successful",
           position: "top",
           description: response.data.mesagge,
           status: "success",
-        })
+        });
       } catch (error) {
         toast({
           position: "top",
-          title: "Registration Failed",
+          title: "Registration failed",
           description: error.response.data.message,
           status: "error",
-        })
-        console.log(error)
+        });
+        console.log(error);
       }
     },
     validationSchema: Yup.object({
@@ -65,12 +65,12 @@ const RegisterPage = () => {
         ),
     }),
     validateOnChange: false,
-  })
+  });
 
   const formChangeHandler = ({ target }) => {
-    const { name, value } = target
-    formik.setFieldValue(name, value)
-  }
+    const { name, value } = target;
+    formik.setFieldValue(name, value);
+  };
   return (
     <Box backgroundColor={"#fafafa"} h="91vh">
       <Container maxW={"container.md"} py="4" pb={"10"}>
@@ -128,7 +128,7 @@ const RegisterPage = () => {
         </Box>
       </Container>
     </Box>
-  )
-}
+  );
+};
 
-export default RegisterPage
+export default RegisterPage;

@@ -20,17 +20,16 @@ import {
   Text,
   Textarea,
   useDisclosure,
-} from "@chakra-ui/react"
-import { useFormik } from "formik"
-import { BsThreeDots } from "react-icons/bs"
-import { useSelector } from "react-redux"
-import Comment from "../component/Comment"
-import * as Yup from "yup"
-import { axiosInstance } from "../api"
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import "../App.css"
-import moment from "moment"
+} from "@chakra-ui/react";
+import { useFormik } from "formik";
+import { BsThreeDots } from "react-icons/bs";
+import { useSelector } from "react-redux";
+import Comment from "../components/Comment";
+import * as Yup from "yup";
+import { axiosInstance } from "../api";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import moment from "moment";
 
 const Post = ({
   username,
@@ -41,44 +40,20 @@ const Post = ({
   postId,
   profile_picture,
   createdAt,
+  comment,
   id,
 }) => {
-  const [comments, setComments] = useState([])
-  const [UserId, setUserId] = useState([])
+  const [comments, setComments] = useState([]);
+  const [UserId, setUserId] = useState([]);
 
-  const authSelector = useSelector((state) => state.auth)
+  const authSelector = useSelector((state) => state.auth);
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const confirmDeleteBtnHandler = () => {
-    onClose()
-    onDelete()
-  }
-
-  const fecthComments = async () => {
-    try {
-      const response = await axiosInstance.get("/comments", {
-        params: {
-          postId,
-          _expand: "user",
-        },
-      })
-
-      setComments(response.data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const renderComments = () => {
-    return comments.map((val) => {
-      return <Comment username={val.user.username} text={val.text} />
-    })
-  }
-
-  useEffect(() => {
-    // fecthComments()
-  })
+    onClose();
+    onDelete();
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -93,23 +68,23 @@ const Post = ({
           text: values.comment,
           userId: authSelector.id,
           postId: postId,
-        }
+        };
 
-        await axiosInstance.post("/comments", newComment)
+        await axiosInstance.post("/comments", newComment);
         // fecthComments()
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
-  })
+  });
 
   return (
     <>
       <Box
-        borderColor={"gray.300"}
-        borderWidth="1px"
-        borderRadius={"8px"}
+        borderBottom="1px solid #cbd5e0"
         backgroundColor="white"
+        pb="20px"
+        mb="12px"
       >
         <HStack justifyContent={"space-between"} padding={"4"}>
           <HStack gap={"2"}>
@@ -129,6 +104,7 @@ const Post = ({
               </Link>
             </Text>
           </HStack>
+
           {authSelector.id === userId ? (
             <Menu>
               <MenuButton>
@@ -143,58 +119,58 @@ const Post = ({
         </HStack>
 
         <Image
-          className="mobilePost"
           // borderRadius="4px"
           height="auto"
           width="100%"
           objectFit="cover"
-          mt=""
           src={
             image_url ||
             "https://images.unsplash.com/photo-1573865526739-10659fec78a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80"
           }
         />
-        <Box
-          fontSize="sm"
-          padding={"4"}
-          borderBottom="1px"
-          borderBottomColor={"gray.300"}
-        >
+        <Box fontSize="sm" padding={"16px 0"}>
           <Box display={"flex"}>
             <Link to={`/profile/${id}/${username}`}>
-              <Text fontWeight="bold" display={"inline"}>
-                {username || "Username"}
+              <Text fontWeight="bold" display={"inline"} mr="2">
+                {username}
               </Text>
             </Link>
-            <Text display={"inline"}>
-              {caption ||
-                "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Architectovoluptas animi quis dolore officia quia quisquam sint quas ab dicta ut mollitia laboriosam sit officiis non, voluptatem nisi facere rem."}
-            </Text>
+            <Text display={"inline"}>{caption}</Text>
           </Box>
           <Text fontSize={"12px"}>
-            {moment(createdAt).format("DD MMMM YYYY")}
+            {moment(createdAt).format("MMMM DD, YYYY")}
+          </Text>
+          {/* {comment.map((val) => (
+            <Box display={"flex"}>
+              <Text fontSize={"sm"} fontWeight="bold" mr="2">
+                {val.User.username}
+              </Text>
+              <Text fontSize={"sm"}>{val.comment}</Text>
+            </Box>
+          ))} */}
+          <Text cursor={"pointer"}>
+            {comment.length > 0
+              ? `Lihat semua ${comment.length} komentar`
+              : null}
           </Text>
         </Box>
-        {/* <Text display={"block"}>Komentar</Text> */}
         <Box>
-          <Stack>{/* {renderComments()} */}</Stack>
-
           <form onSubmit={formik.handleSubmit}>
             <HStack>
               <Textarea
-                width={"full"}
-                maxH="20px"
+                // width={"full"}
+                p="0"
+                maxH="80px"
                 placeholder="Tambahkan komentar..."
                 onChange={({ target }) =>
                   formik.setFieldValue(target.name, target.value)
                 }
                 value={formik.values.comment}
                 name="comment"
-                resize={"none"}
                 border="0"
                 borderRadius="0"
-                outline={"blue"}
-                size="xs"
+                rows={3}
+                fontSize="14px"
               />
 
               <Button
@@ -202,7 +178,9 @@ const Post = ({
                 textColor="#C37B89"
                 size="sm"
                 type="submit"
+                none
                 p="4"
+                display={formik.values.comment ? "block" : "none"}
               >
                 Send
               </Button>
@@ -236,7 +214,7 @@ const Post = ({
         </AlertDialogOverlay>
       </AlertDialog>
     </>
-  )
-}
+  );
+};
 
-export default Post
+export default Post;

@@ -1,4 +1,4 @@
-import { AddIcon } from "@chakra-ui/icons"
+import { AddIcon } from "@chakra-ui/icons";
 import {
   Avatar,
   Box,
@@ -13,21 +13,21 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
-} from "@chakra-ui/react"
-import { useDispatch, useSelector } from "react-redux"
-import { Link } from "react-router-dom"
-import { logout } from "../redux/features/authSlice"
-import NewPost from "./NewPost"
+} from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { logout } from "../redux/features/authSlice";
+import NewPost from "./NewPost";
 
 const Navbar = () => {
-  const authSelector = useSelector((state) => state.auth)
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const dispatch = useDispatch()
+  const authSelector = useSelector((state) => state.auth);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useDispatch();
 
   const logoutBtnHandler = () => {
-    localStorage.removeItem("auth_token")
-    dispatch(logout())
-  }
+    localStorage.removeItem("auth_token");
+    dispatch(logout());
+  };
   return (
     <>
       <Box
@@ -60,6 +60,7 @@ const Navbar = () => {
                     border={"3px solid"}
                     size="md"
                     _hover="none"
+                    _active={false}
                   >
                     <AddIcon />
                   </Button>
@@ -80,6 +81,7 @@ const Navbar = () => {
                 bgColor="transparent"
                 border={"3px solid "}
                 _hover="none"
+                _active={false}
               >
                 <Link to={"/"}>Home</Link>
               </Button>
@@ -89,6 +91,7 @@ const Navbar = () => {
                   bgColor="transparent"
                   border={"3px solid white"}
                   _hover="none"
+                  _active={false}
                 >
                   <Link to={"/login"}>Login</Link>
                 </Button>
@@ -128,7 +131,7 @@ const Navbar = () => {
         </Container>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

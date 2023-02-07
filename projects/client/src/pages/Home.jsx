@@ -7,17 +7,16 @@ import {
   Container,
   Stack,
   useToast,
-} from "@chakra-ui/react"
-import { useEffect, useState } from "react"
-import { axiosInstance } from "../api"
-import Post from "../component/Post"
-import "../App.css"
+} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { axiosInstance } from "../api";
+import Post from "../components/Post";
 
 const HomePage = () => {
-  const [posts, setPosts] = useState([])
-  const [page, setPage] = useState(1)
-  const [totalCount, setTotalCount] = useState(0)
-  const toast = useToast()
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const toast = useToast();
 
   const fetchPosts = async () => {
     try {
@@ -27,30 +26,31 @@ const HomePage = () => {
           _page: page,
           _sortDir: "DESC",
         },
-      })
+      });
+      console.log(response);
 
-      setTotalCount(response.data.dataCount)
+      setTotalCount(response.data.dataCount);
 
       if (page === 1) {
-        setPosts(response.data.data)
+        setPosts(response.data.data);
       } else {
-        setPosts([...posts, ...response.data.data])
+        setPosts([...posts, ...response.data.data]);
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const deleteBtnHandler = async (id) => {
     try {
-      await axiosInstance.delete(`/posts/${id}`)
+      await axiosInstance.delete(`/posts/${id}`);
 
-      fetchPosts()
-      toast({ position: "top", title: "Post deleted", status: "info" })
+      fetchPosts();
+      toast({ position: "top", title: "Post deleted", status: "info" });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const renderPosts = () => {
     return posts.map((val) => {
@@ -65,23 +65,24 @@ const HomePage = () => {
           onDelete={() => deleteBtnHandler(val.id)}
           postId={val.id}
           createdAt={val.createdAt.toString()}
+          comment={val.Comments}
         />
-      )
-    })
-  }
+      );
+    });
+  };
 
   const seeMoreBtnHandler = () => {
-    setPage(page + 1)
-  }
+    setPage(page + 1);
+  };
 
   useEffect(() => {
-    fetchPosts()
-  }, [page])
+    fetchPosts();
+  }, [page]);
 
   return (
-    <Box className="#f0f4f5">
-      <Container maxW={"container.md"} py="4" pb={"10"}>
-        <Stack mt={"8"} spacing="4">
+    <Box bgColor={"white"}>
+      <Container maxW={"container.sm"} py="4" pb={"10"}>
+        <Stack mt="0">
           {renderPosts()}
 
           {!posts.length ? (
@@ -104,6 +105,6 @@ const HomePage = () => {
         )}
       </Container>
     </Box>
-  )
-}
-export default HomePage
+  );
+};
+export default HomePage;

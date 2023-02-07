@@ -12,26 +12,26 @@ import {
   Textarea,
   useDisclosure,
   useToast,
-} from "@chakra-ui/react"
-import { useFormik } from "formik"
-import { useEffect, useRef, useState } from "react"
-import { useSelector } from "react-redux"
-import { axiosInstance } from "../api"
-import * as Yup from "yup"
-import Post from "../component/Post"
-import { AddIcon } from "@chakra-ui/icons"
-import comment from "../component/Comment"
+} from "@chakra-ui/react";
+import { useFormik } from "formik";
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { axiosInstance } from "../api";
+import * as Yup from "yup";
+import Post from "../components/Post";
+import { AddIcon } from "@chakra-ui/icons";
+import comment from "../components/Comment";
 
 const NewPost = () => {
-  const [posts, setPosts] = useState([])
-  const [page, setPage] = useState(1)
-  const [totalCount, setTotalCount] = useState(0)
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const toast = useToast()
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
-  const inputFileRef = useRef(null)
+  const inputFileRef = useRef(null);
 
-  const authSelector = useSelector((state) => state.auth)
+  const authSelector = useSelector((state) => state.auth);
 
   const formik = useFormik({
     initialValues: {
@@ -40,34 +40,34 @@ const NewPost = () => {
     },
     onSubmit: async (values) => {
       try {
-        let newPost = new FormData()
+        let newPost = new FormData();
 
-        newPost.append("caption", values.caption)
-        newPost.append("post_image", values.post_image)
+        newPost.append("caption", values.caption);
+        newPost.append("post_image", values.post_image);
 
-        await axiosInstance.post("/posts", newPost)
+        await axiosInstance.post("/posts", newPost);
 
-        formik.setFieldValue("caption", "")
-        formik.setFieldValue("post_image", null)
+        formik.setFieldValue("caption", "");
+        formik.setFieldValue("post_image", null);
 
         toast({
           position: "top",
           title: "Post success",
           status: "success",
-        })
+        });
 
-        fetchPosts()
+        fetchPosts();
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
-  })
+  });
 
   const inputChangeHandler = ({ target }) => {
-    const { name, value } = target
+    const { name, value } = target;
 
-    formik.setFieldValue(name, value)
-  }
+    formik.setFieldValue(name, value);
+  };
 
   const fetchPosts = async () => {
     try {
@@ -77,29 +77,29 @@ const NewPost = () => {
           _page: page,
           _sortDir: "DESC",
         },
-      })
+      });
 
-      setTotalCount(response.data.dataCount)
+      setTotalCount(response.data.dataCount);
 
       if (page === 1) {
-        setPosts(response.data.data)
+        setPosts(response.data.data);
       } else {
-        setPosts([...posts, ...response.data.data])
+        setPosts([...posts, ...response.data.data]);
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const deleteBtnHandler = async (id) => {
     try {
-      await axiosInstance.delete(`/posts/${id}`)
-      fetchPosts()
-      toast({ position: "top", title: "Post deleted", status: "info" })
+      await axiosInstance.delete(`/posts/${id}`);
+      fetchPosts();
+      toast({ position: "top", title: "Post deleted", status: "info" });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const renderPosts = () => {
     return posts.map((val) => {
@@ -111,21 +111,21 @@ const NewPost = () => {
           image_url={val.image_url}
           userId={val.userId}
           onDelete={() => {
-            deleteBtnHandler(val.id)
+            deleteBtnHandler(val.id);
           }}
           postId={val.id}
         ></Post>
-      )
-    })
-  }
+      );
+    });
+  };
 
   const seeMoreBtnHandler = () => {
-    setPage(page + 1)
-  }
+    setPage(page + 1);
+  };
 
   useEffect(() => {
-    fetchPosts()
-  }, [page])
+    fetchPosts();
+  }, [page]);
 
   return (
     <Box backgroundColor={"#fafafa"}>
@@ -144,7 +144,7 @@ const NewPost = () => {
               ref={inputFileRef}
               display={"none"}
               onChange={(event) => {
-                formik.setFieldValue("post_image", event.target.files[0])
+                formik.setFieldValue("post_image", event.target.files[0]);
               }}
               name="post_image"
               type="file"
@@ -152,7 +152,7 @@ const NewPost = () => {
             />
             <Button
               onClick={() => {
-                inputFileRef.current.click()
+                inputFileRef.current.click();
               }}
               width="100%"
             >
@@ -169,6 +169,6 @@ const NewPost = () => {
         </Stack>
       </Container>
     </Box>
-  )
-}
-export default NewPost
+  );
+};
+export default NewPost;

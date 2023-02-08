@@ -92,7 +92,7 @@ const HomePage = () => {
             </Alert>
           ) : null}
         </Stack>
-        {posts.length >= totalCount ? null : (
+        {posts.length <= totalCount ? null : (
           <Button
             colorScheme={"teal"}
             width={"100%"}

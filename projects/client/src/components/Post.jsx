@@ -30,6 +30,7 @@ import { axiosInstance } from "../api";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import ModalPost from "./ModalPost";
 
 const Post = ({
   username,
@@ -43,17 +44,23 @@ const Post = ({
   comment,
   id,
 }) => {
-  const [comments, setComments] = useState([]);
+  const [modalPost, setModalPost] = useState(null);
   const [UserId, setUserId] = useState([]);
 
   const authSelector = useSelector((state) => state.auth);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const [onOpen, isOpen, onClose] = useDisclosure();
 
-  const confirmDeleteBtnHandler = () => {
-    onClose();
-    onDelete();
-  };
+  const {
+    isOpen: isOpenModalPost,
+    onOpen: onOpenModalPost,
+    onClose: onCloseModalPost,
+  } = useDisclosure();
+
+  // const confirmDeleteBtnHandler = () => {
+  //   onClose();
+  //   onDelete();
+  // };
 
   const formik = useFormik({
     initialValues: {
@@ -62,21 +69,19 @@ const Post = ({
     validationSchema: Yup.object({
       comment: Yup.string().required(),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async ({ comment }) => {
       try {
-        let newComment = {
-          text: values.comment,
-          userId: authSelector.id,
-          postId: postId,
-        };
-
-        await axiosInstance.post("/comments", newComment);
-        // fecthComments()
+        await axiosInstance.post(`/comment/create/${id}`, { comment });
       } catch (error) {
         console.log(error);
       }
     },
   });
+
+  const formChangeHandler = ({ target }) => {
+    const { name, value } = target;
+    formik.setFieldValue(name, value);
+  };
 
   return (
     <>
@@ -105,7 +110,7 @@ const Post = ({
             </Text>
           </HStack>
 
-          {authSelector.id === userId ? (
+          {/* {authSelector.id === userId ? (
             <Menu>
               <MenuButton>
                 <Icon as={BsThreeDots} boxSize="20px" />
@@ -115,7 +120,7 @@ const Post = ({
                 <MenuItem onClick={onOpen}>Delete</MenuItem>
               </MenuList>
             </Menu>
-          ) : null}
+          ) : null} */}
         </HStack>
 
         <Image
@@ -123,10 +128,7 @@ const Post = ({
           height="auto"
           width="100%"
           objectFit="cover"
-          src={
-            image_url ||
-            "https://images.unsplash.com/photo-1573865526739-10659fec78a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=415&q=80"
-          }
+          src={image_url}
         />
         <Box fontSize="sm" padding={"16px 0"}>
           <Box display={"flex"}>
@@ -140,15 +142,8 @@ const Post = ({
           <Text fontSize={"12px"}>
             {moment(createdAt).format("MMMM DD, YYYY")}
           </Text>
-          {/* {comment.map((val) => (
-            <Box display={"flex"}>
-              <Text fontSize={"sm"} fontWeight="bold" mr="2">
-                {val.User.username}
-              </Text>
-              <Text fontSize={"sm"}>{val.comment}</Text>
-            </Box>
-          ))} */}
-          <Text cursor={"pointer"}>
+          {moment().startOf("day").fromNow()}
+          <Text cursor={"pointer"} onClick={onOpenModalPost}>
             {comment.length > 0
               ? `Lihat semua ${comment.length} komentar`
               : null}
@@ -158,13 +153,10 @@ const Post = ({
           <form onSubmit={formik.handleSubmit}>
             <HStack>
               <Textarea
-                // width={"full"}
                 p="0"
                 maxH="80px"
-                placeholder="Tambahkan komentar..."
-                onChange={({ target }) =>
-                  formik.setFieldValue(target.name, target.value)
-                }
+                placeholder="Add comments..."
+                onChange={formChangeHandler}
                 value={formik.values.comment}
                 name="comment"
                 border="0"
@@ -178,7 +170,6 @@ const Post = ({
                 textColor="#C37B89"
                 size="sm"
                 type="submit"
-                none
                 p="4"
                 display={formik.values.comment ? "block" : "none"}
               >
@@ -189,7 +180,7 @@ const Post = ({
         </Box>
       </Box>
 
-      <AlertDialog isCentered isOpen={isOpen} onClose={onClose}>
+      {/* <AlertDialog isCentered isOpen={isOpen} onClose={onClose}>
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
@@ -204,7 +195,7 @@ const Post = ({
               <Button onClick={onClose}>Cancel</Button>
               <Button
                 colorScheme="red"
-                onClick={confirmDeleteBtnHandler}
+                // onClick={confirmDeleteBtnHandler}
                 ml={3}
               >
                 Delete
@@ -212,7 +203,18 @@ const Post = ({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
-      </AlertDialog>
+      </AlertDialog> */}
+
+      <ModalPost
+        comment={comment}
+        image_url={image_url}
+        isOpen={isOpenModalPost}
+        onOpen={onOpenModalPost}
+        onClose={onCloseModalPost}
+        username={username}
+        caption={caption}
+        createdAt={createdAt}
+      />
     </>
   );
 };
